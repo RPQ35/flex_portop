@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Dynamic Web Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --text: #ffffff;
+    --accent: #ff6900;
+    --accent2: #7b61ff;
+    --muted: #888;
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ====== CUSTOM CURSOR ====== */
+  .cursor-glow {
+    position: fixed;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,105,0,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease-out;
+    mix-blend-mode: screen;
+  }
+
+  /* ====== LOADER ====== */
+  .loader {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  .loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo {
+    font-size: 3rem; font-weight: 900; letter-spacing: 0.8em;
+    color: var(--text);
+    animation: loaderPulse 1.5s ease-in-out infinite;
+  }
+  .loader-bar {
+    width: 200px; height: 2px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .loader-bar::after {
+    content: '';
+    display: block;
+    width: 40%; height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: loaderSlide 1.2s ease-in-out infinite;
+  }
+  @keyframes loaderPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  @keyframes loaderSlide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(350%); }
+  }
+
+  /* ====== NAV ====== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 20px 50px;
+    display: flex; align-items: center; justify-content: space-between;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(10,10,15,0.6);
+    border-bottom: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+  }
+  nav.scrolled { padding: 12px 50px; background: rgba(10,10,15,0.9); }
+  .nav-logo {
+    font-size: 1.5rem; font-weight: 900;
+    letter-spacing: 0.3em;
+    background: linear-gradient(135deg, var(--text), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .nav-links { display: flex; gap: 40px; align-items: center; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    padding: 10px 28px;
+    background: var(--accent);
+    color: #fff !important;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(255,105,0,0.4);
+  }
+  .nav-cta::after { display: none !important; }
+
+  .menu-toggle {
+    display: none;
+    flex-direction: column; gap: 5px;
+    cursor: pointer; z-index: 1001;
+  }
+  .menu-toggle span {
+    width: 28px; height: 2px;
+    background: var(--text);
+    transition: all 0.3s;
+  }
+  .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+  .menu-toggle.active span:nth-child(2) { opacity: 0; }
+  .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+  /* ====== HERO ====== */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    opacity: 0.06;
+  }
+  .hero-bg .grid-row {
+    display: flex;
+    white-space: nowrap;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 1.2em;
+    color: var(--text);
+    animation: slideRight 30s linear infinite;
+  }
+  .hero-bg .grid-row:nth-child(even) {
+    animation: slideLeft 35s linear infinite;
+  }
+  .hero-bg .grid-row span {
+    display: inline-block;
+    padding: 15px 0;
+  }
+  @keyframes slideRight {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes slideLeft {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+
+  .hero-particles {
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    animation: particleFloat 6s ease-in-out infinite;
+  }
+  @keyframes particleFloat {
+    0% { opacity: 0; transform: translateY(0) scale(0); }
+    50% { opacity: 0.8; transform: translateY(-100px) scale(1); }
+    100% { opacity: 0; transform: translateY(-200px) scale(0); }
+  }
+
+  .hero-content { position: relative; z-index: 10; max-width: 900px; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 20px;
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    background: var(--glass);
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero-title {
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradientShift 6s ease infinite;
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    margin-bottom: 15px;
+  }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+
+  .hero-buttons {
+    display: flex; gap: 20px; justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    padding: 16px 40px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255,105,0,0.4);
+  }
+
+  .btn-secondary {
+    padding: 16px 40px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  .btn-secondary:hover {
+    background: var(--glass);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+
+  /* ====== SECTIONS ====== */
+  section {
+    padding: 120px 50px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 15px;
+  }
+  .section-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 1.15rem;
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 60px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  .feature-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px 30px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(255,105,0,0.3);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  }
+  .feature-icon {
+    width: 50px; height: 50px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  .feature-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .feature-card p {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  /* ====== MARQUEE ====== */
+  .marquee-section {
+    padding: 30px 0;
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+    overflow: hidden;
+    background: var(--glass);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 60px;
+    animation: marquee 25s linear infinite;
+    width: max-content;
+  }
+  .marquee-track span {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 60px;
+  }
+  .marquee-track .dot-sep {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ====== CTA SECTION ====== */
+  .cta-section {
+    padding: 120px 50px;
+    text-align: center;
+    position: relative;
+  }
+  .cta-section h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    margin-bottom: 20px;
+  }
+  .cta-section p {
+    color: var(--muted);
+    font-size: 1.1rem;
+    max-width: 550px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+  .contact-links-grid {
+    display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  /* ====== FOOTER ====== */
+  footer {
+    padding: 60px 50px;
+    border-top: 1px solid var(--glass-border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 1024px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 15px 25px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .nav-links {
+      position: fixed;
+      top: 0; right: -100%;
+      width: 280px; height: 100vh;
+      background: rgba(10,10,15,0.98);
+      flex-direction: column;
+      justify-content: center;
+      gap: 25px;
+      transition: right 0.4s ease;
+    }
+    .nav-links.open { right: 0; }
+    .menu-toggle { display: flex; }
+    section { padding: 80px 25px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <div class="loader-logo" id="loaderTitle">PORTFOLIO</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- Cursor Glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <div class="nav-logo dynamic-name">Portfolio</div>
+  <div class="nav-links" id="navLinks">
+    <a href="#projects">Projects</a>
+    <a href="#academic">Academic</a>
+    <a href="#prestations">Prestations</a>
+    <a href="#contact" class="nav-cta">Contact</a>
+  </div>
+  <div class="menu-toggle" id="menuToggle">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-particles" id="particles"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="dot"></div>
+      Available for Opportunities
+    </div>
+    <h1 class="hero-title dynamic-name">Loading...</h1>
+    <p class="hero-subtitle" id="dynamic-principle">Software Developer & Technical Specialist</p>
+    <p class="hero-desc" id="dynamic-bio">
+      Fetching personal bio and info dynamically from Google Sheets database...
+    </p>
+    <div class="hero-buttons">
+      <a href="#projects" class="btn-primary">View Projects →</a>
+      <a href="#contact" class="btn-secondary">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <span>DYNAMIC PORTFOLIO <div class="dot-sep"></div> GOOGLE SHEETS & DRIVE <div class="dot-sep"></div> CLEAN ARCHITECTURE <div class="dot-sep"></div> FULLSTACK <div class="dot-sep"></div></span>
+    <span>DYNAMIC PORTFOLIO <div class="dot-sep"></div> GOOGLE SHEETS & DRIVE <div class="dot-sep"></div> CLEAN ARCHITECTURE <div class="dot-sep"></div> FULLSTACK <div class="dot-sep"></div></span>
+  </div>
+</div>
+
+<!-- Personal Projects Section -->
+<section id="projects">
+  <div class="section-label">Portfolio Showcase</div>
+  <h2 class="section-title">Personal Projects</h2>
+  <p class="section-desc">Projects managed dynamically through the Google Sheets database with direct asset linking from Drive.</p>
+  
+  <div class="cards-grid" id="projectsContainer">
+    <!-- Populated via Apps Script JSON -->
+    <div class="feature-card">
+      <h3>Loading projects...</h3>
+    </div>
+  </div>
+</section>
+
+<!-- Academic History Section -->
+<section id="academic" style="background: rgba(255,255,255,0.01);">
+  <div class="section-label">Education Journey</div>
+  <h2 class="section-title">Academic History</h2>
+  <p class="section-desc">Flexible academic record pulled live from your sheet rows.</p>
+  
+  <div class="cards-grid" id="academicContainer">
+    <!-- Populated via Apps Script JSON -->
+  </div>
+</section>
+
+<!-- Prestations / Awards Section -->
+<section id="prestations">
+  <div class="section-label">Achievements</div>
+  <h2 class="section-title">Prestations & Awards</h2>
+  <p class="section-desc">Competitions and certifications earned over time.</p>
+  
+  <div class="cards-grid" id="prestationContainer">
+    <!-- Populated via Apps Script JSON -->
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="cta-section" id="contact">
+  <div class="section-label">Let's Connect</div>
+  <h2>Get In Touch</h2>
+  <p>Reach out through any of the channels below, managed effortlessly via your contacts spreadsheet.</p>
+  <div class="contact-links-grid" id="contactLinksContainer">
+    <!-- Populated via Apps Script JSON -->
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div style="margin-bottom: 10px;" class="dynamic-name">Portfolio</div>
+  <div>Powered by Google Sheets, Apps Script, & Google Drive.</div>
+</footer>
+
+<script>
+// ===== APPS SCRIPT WEB APP ENDPOINT =====
+const API_URL = "https://script.google.com/macros/s/AKfycbytNdYfzWFSTiU7tgd1fSA6AfejI97dn4f5mkoht-9ZViVEXxvPZy5D47bPtq78tFq_/exec";
+
+// ===== FETCH AND INJECT PORTFOLIO DATA =====
+async function fetchPortfolioData() {
+  try {
+    const response = await fetch(API_URL);
+    const data = await response.json();
+
+    // 1. Profile Data
+    if (data.profile) {
+      const name = data.profile.name || "Portfolio";
+      document.querySelectorAll('.dynamic-name').forEach(el => el.textContent = name);
+      if (document.getElementById('loaderTitle')) document.getElementById('loaderTitle').textContent = name.toUpperCase();
+      
+      const bioEl = document.getElementById('dynamic-bio');
+      if (bioEl && data.profile.bio) bioEl.textContent = data.profile.bio;
+
+      const principleEl = document.getElementById('dynamic-principle');
+      if (principleEl && data.profile.principle) principleEl.textContent = data.profile.principle;
+    }
+
+    // 2. Projects Data
+    if (data.projects && data.projects.length > 0) {
+      const pContainer = document.getElementById('projectsContainer');
+      pContainer.innerHTML = data.projects.map(proj => `
+        <div class="feature-card">
+          ${proj.imageDirectUrl ? `<div style="margin-bottom:20px; border-radius:12px; overflow:hidden; aspect-ratio:16/9; background:#111;"><img src="${proj.imageDirectUrl}" alt="${proj.title}" style="width:100%; height:100%; object-fit:cover;"></div>` : '<div class="feature-icon">💻</div>'}
+          <h3>${proj.title}</h3>
+          <p style="margin-bottom: 15px;">${proj.description}</p>
+          <div style="font-size: 0.85rem; color: var(--accent); margin-bottom: 15px; font-weight: 600;">Stack: ${proj.techStack}</div>
+          ${proj.projectLink ? `<a href="${proj.projectLink}" target="_blank" class="btn-secondary" style="padding: 8px 20px; font-size: 0.85rem; display: inline-block;">View Project →</a>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // 3. Academic History Data
+    if (data.academicHistory && data.academicHistory.length > 0) {
+      const aContainer = document.getElementById('academicContainer');
+      aContainer.innerHTML = data.academicHistory.map(item => `
+        <div class="feature-card">
+          <div class="feature-icon">🎓</div>
+          <h3>${item.institution}</h3>
+          <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-bottom: 10px;">${item.degreeMajor} (${item.yearDuration})</div>
+          <p>${item.description}</p>
+        </div>
+      `).join('');
+    }
+
+    // 4. Prestations Data
+    if (data.prestations && data.prestations.length > 0) {
+      const prContainer = document.getElementById('prestationContainer');
+      prContainer.innerHTML = data.prestations.map(item => `
+        <div class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <h3>${item.title}</h3>
+          <div style="color: var(--accent2); font-weight: 600; font-size: 0.9rem; margin-bottom: 10px;">${item.organizerLevel} — ${item.year}</div>
+          <p>${item.description}</p>
+        </div>
+      `).join('');
+    }
+
+    // 5. Contacts Data
+    if (data.contacts && data.contacts.length > 0) {
+      const cContainer = document.getElementById('contactLinksContainer');
+      cContainer.innerHTML = data.contacts.map(c => `
+        <a href="${c.linkValue}" target="_blank" class="btn-secondary">${c.platform}: ${c.handleLabel}</a>
+      `).join('');
+    }
+
+  } catch (err) {
+    console.error("Error fetching spreadsheet data:", err);
+  }
+}
+
+// Run data load on start
+document.addEventListener('DOMContentLoaded', fetchPortfolioData);
+
+// ===== LOADER =====
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 1200);
+});
+
+// ===== CURSOR GLOW =====
+const glow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', (e) => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top = e.clientY + 'px';
+});
+
+// ===== NAVBAR SCROLL =====
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 80);
+});
+
+// ===== MOBILE MENU =====
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+menuToggle.addEventListener('click', () => {
+  menuToggle.classList.toggle('active');
+  navLinks.classList.toggle('open');
+});
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    menuToggle.classList.remove('active');
+    navLinks.classList.remove('open');
+  });
+});
+
+// ===== HERO BACKGROUND PATTERN =====
+function buildHeroBackground() {
+  const container = document.getElementById('heroBg');
+  const rows = Math.ceil(window.innerHeight / 55);
+  container.innerHTML = '';
+  for (let i = 0; i < rows; i++) {
+    const row = document.createElement('div');
+    row.classList.add('grid-row');
+    row.style.animationDelay = `${i * 0.3}s`;
+    row.style.animationDuration = `${25 + (i % 5) * 5}s`;
+    let text = '';
+    for (let j = 0; j < 30; j++) {
+      text += '<span>PORTFOLIO</span>';
+    }
+    row.innerHTML = text;
+    container.appendChild(row);
+  }
+}
+buildHeroBackground();
+window.addEventListener('resize', buildHeroBackground);
+
+// ===== PARTICLES =====
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 6 + 's';
+    p.style.animationDuration = (4 + Math.random() * 5) + 's';
+    if (Math.random() > 0.5) p.style.background = '#7b61ff';
+    container.appendChild(p);
+  }
+}
+createParticles();
+</script>
+
+</body>
+</html>
