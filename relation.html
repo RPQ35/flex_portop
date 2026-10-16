@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Praktikum Sistem Basis Data & Laporan</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-database text-indigo-400"></i> Praktikum Sistem Basis Data
+                </h1>
+                <p class="text-indigo-200 text-sm mt-1">Normalisasi Basis Data & Penyusunan Laporan Resmi POLNES Mart</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex gap-3">
+                <button onclick="switchMainTab('code')" id="btn-code" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-600 text-white text-sm font-semibold rounded-lg transition shadow flex items-center gap-2">
+                    <i class="fa-solid fa-code"></i> Bab Kode & Normalisasi
+                </button>
+                <button onclick="switchMainTab('report')" id="btn-report" class="px-4 py-2 bg-indigo-800/60 hover:bg-indigo-700 text-indigo-100 text-sm font-semibold rounded-lg transition shadow flex items-center gap-2">
+                    <i class="fa-solid fa-file-lines"></i> Teks Siap Google Docs
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+        
+        <!-- TAB 1: BAB KODE & NORMALISASI -->
+        <div id="view-code" class="space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-2">Modul Transformasi & Implementasi Basis Data</h2>
+                <p class="text-slate-600 text-sm">Pilih sub-tab di bawah ini untuk melihat tahapan normalisasi secara runtut mulai dari Bentuk Tidak Normal (UNF) hingga Third Normal Form (3NF) beserta skrip SQL DDL & DML lengkap dengan penjelasannya.</p>
+                
+                <!-- Sub-tabs Navigation -->
+                <div class="flex flex-wrap gap-2 mt-6 border-b border-slate-200 pb-4">
+                    <button onclick="switchSubTab('unf')" id="subbtn-unf" class="sub-tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white transition">1. UNF (Unnormalized)</button>
+                    <button onclick="switchSubTab('1nf')" id="subbtn-1nf" class="sub-tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">2. First Normal Form (1NF)</button>
+                    <button onclick="switchSubTab('2nf')" id="subbtn-2nf" class="sub-tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">3. Second Normal Form (2NF)</button>
+                    <button onclick="switchSubTab('3nf')" id="subbtn-3nf" class="sub-tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">4. Third Normal Form (3NF)</button>
+                    <button onclick="switchSubTab('sql')" id="subbtn-sql" class="sub-tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">5. Skrip SQL (DDL & DML)</button>
+                </div>
+
+                <!-- Sub-tab Content: UNF -->
+                <div id="subtab-unf" class="sub-content space-y-4 mt-6">
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                        <h3 class="font-bold text-amber-900 text-sm">Penjelasan Tahap UNF (Unnormalized Form)</h3>
+                        <p class="text-amber-800 text-sm mt-1">Data awal dari struk belanja kasir "POLNES Mart" mengandung grup berulang (repeating groups) karena adanya fitur <em>Merge Cells</em> pada spreadsheet Excel. Atribut barang, harga, qty, dan sub-total digabungkan dalam satu sel.</p>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+                                <tr>
+                                    <th class="p-3 border-b">No_Nota</th>
+                                    <th class="p-3 border-b">Tanggal_Nota</th>
+                                    <th class="p-3 border-b">ID_Kasir</th>
+                                    <th class="p-3 border-b">Nama_Kasir</th>
+                                    <th class="p-3 border-b">ID_Pelanggan</th>
+                                    <th class="p-3 border-b">Nama_Pelanggan</th>
+                                    <th class="p-3 border-b">Kode_Brg</th>
+                                    <th class="p-3 border-b">Nama_Brg</th>
+                                    <th class="p-3 border-b">Harga</th>
+                                    <th class="p-3 border-b">Qty</th>
+                                    <th class="p-3 border-b">Sub_Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 font-mono">
+                                <tr>
+                                    <td class="p-3">N-101</td>
+                                    <td class="p-3">05-10-2026</td>
+                                    <td class="p-3">K01</td>
+                                    <td class="p-3">Rina</td>
+                                    <td class="p-3">P-01</td>
+                                    <td class="p-3">Budi Santoso</td>
+                                    <td class="p-3 bg-amber-50">B01<br>B02</td>
+                                    <td class="p-3 bg-amber-50">Sabun Mandi<br>Sampo Clear</td>
+                                    <td class="p-3 bg-amber-50">5000<br>15000</td>
+                                    <td class="p-3 bg-amber-50">2<br>1</td>
+                                    <td class="p-3 bg-amber-50">10000<br>15000</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">N-102</td>
+                                    <td class="p-3">05-10-2026</td>
+                                    <td class="p-3">K02</td>
+                                    <td class="p-3">Anton</td>
+                                    <td class="p-3">P-02</td>
+                                    <td class="p-3">Citra Kirana</td>
+                                    <td class="p-3">B03</td>
+                                    <td class="p-3">Pasta Gigi</td>
+                                    <td class="p-3">12000</td>
+                                    <td class="p-3">3</td>
+                                    <td class="p-3">36000</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">N-103</td>
+                                    <td class="p-3">06-10-2026</td>
+                                    <td class="p-3">K01</td>
+                                    <td class="p-3">Rina</td>
+                                    <td class="p-3">P-01</td>
+                                    <td class="p-3">Budi Santoso</td>
+                                    <td class="p-3 bg-amber-50">B01<br>B04</td>
+                                    <td class="p-3 bg-amber-50">Sabun Mandi<br>Sikat Gigi</td>
+                                    <td class="p-3 bg-amber-50">5000<br>8000</td>
+                                    <td class="p-3 bg-amber-50">1<br>2</td>
+                                    <td class="p-3 bg-amber-50">5000<br>16000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sub-tab Content: 1NF -->
+                <div id="subtab-1nf" class="sub-content space-y-4 mt-6 hidden">
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                        <h3 class="font-bold text-blue-900 text-sm">Penjelasan Tahap 1NF (First Normal Form)</h3>
+                        <p class="text-blue-800 text-sm mt-1">Aturan 1NF mengharuskan setiap perpotongan baris dan kolom (sel) hanya berisi tepat SATU nilai (atomik). Baris yang digabung pada tabel UNF dipecah menjadi baris-baris mandiri yang lengkap dengan mengulang informasi nota.</p>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+                                <tr>
+                                    <th class="p-3 border-b">No_Nota</th>
+                                    <th class="p-3 border-b">Tanggal_Nota</th>
+                                    <th class="p-3 border-b">ID_Kasir</th>
+                                    <th class="p-3 border-b">Nama_Kasir</th>
+                                    <th class="p-3 border-b">ID_Pelanggan</th>
+                                    <th class="p-3 border-b">Nama_Pelanggan</th>
+                                    <th class="p-3 border-b">Kode_Brg</th>
+                                    <th class="p-3 border-b">Nama_Brg</th>
+                                    <th class="p-3 border-b">Harga</th>
+                                    <th class="p-3 border-b">Qty</th>
+                                    <th class="p-3 border-b">Sub_Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 font-mono">
+                                <tr>
+                                    <td class="p-3">N-101</td><td class="p-3">05-10-2026</td><td class="p-3">K01</td><td class="p-3">Rina</td><td class="p-3">P-01</td><td class="p-3">Budi Santoso</td><td class="p-3 font-bold text-indigo-600">B01</td><td class="p-3">Sabun Mandi</td><td class="p-3">5000</td><td class="p-3">2</td><td class="p-3">10000</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">N-101</td><td class="p-3">05-10-2026</td><td class="p-3">K01</td><td class="p-3">Rina</td><td class="p-3">P-01</td><td class="p-3">Budi Santoso</td><td class="p-3 font-bold text-indigo-600">B02</td><td class="p-3">Sampo Clear</td><td class="p-3">15000</td><td class="p-3">1</td><td class="p-3">15000</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">N-102</td><td class="p-3">05-10-2026</td><td class="p-3">K02</td><td class="p-3">Anton</td><td class="p-3">P-02</td><td class="p-3">Citra Kirana</td><td class="p-3 font-bold text-indigo-600">B03</td><td class="p-3">Pasta Gigi</td><td class="p-3">12000</td><td class="p-3">3</td><td class="p-3">36000</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">N-103</td><td class="p-3">06-10-2026</td><td class="p-3">K01</td><td class="p-3">Rina</td><td class="p-3">P-01</td><td class="p-3">Budi Santoso</td><td class="p-3 font-bold text-indigo-600">B01</td><td class="p-3">Sabun Mandi</td><td class="p-3">5000</td><td class="p-3">1</td><td class="p-3">5000</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">N-103</td><td class="p-3">06-10-2026</td><td class="p-3">K01</td><td class="p-3">Rina</td><td class="p-3">P-01</td><td class="p-3">Budi Santoso</td><td class="p-3 font-bold text-indigo-600">B04</td><td class="p-3">Sikat Gigi</td><td class="p-3">8000</td><td class="p-3">2</td><td class="p-3">16000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sub-tab Content: 2NF -->
+                <div id="subtab-2nf" class="sub-content space-y-6 mt-6 hidden">
+                    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg">
+                        <h3 class="font-bold text-indigo-900 text-sm">Penjelasan Tahap 2NF (Second Normal Form)</h3>
+                        <p class="text-indigo-800 text-sm mt-1">Syarat 2NF adalah sudah berada dalam 1NF dan tidak memiliki ketergantungan parsial (atribut non-kunci hanya bergantung pada sebagian primary key). Pada tahap ini kita tentukan Composite Primary Key pada tabel detail dan memisahkan tabel menjadi 3 entitas awal: <strong>Tabel Nota</strong>, <strong>Tabel Barang</strong>, dan <strong>Tabel Detail_Transaksi</strong>.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Tabel Nota -->
+                        <div class="border rounded-lg p-4 bg-white shadow-sm">
+                            <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-1">1. Tabel Nota (Transaksi)</h4>
+                            <p class="text-xs text-slate-500 mb-2">PK: No_Nota</p>
+                            <table class="w-full text-left text-xs font-mono">
+                                <thead class="bg-slate-100">
+                                    <tr><th class="p-2">No_Nota</th><th class="p-2">Tanggal</th><th class="p-2">ID_Kasir</th><th class="p-2">ID_Pel</th></tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    <tr><td class="p-2 font-bold">N-101</td><td class="p-2">05-10</td><td class="p-2">K01</td><td class="p-2">P-01</td></tr>
+                                    <tr><td class="p-2 font-bold">N-102</td><td class="p-2">05-10</td><td class="p-2">K02</td><td class="p-2">P-02</td></tr>
+                                    <tr><td class="p-2 font-bold">N-103</td><td class="p-2">06-10</td><td class="p-2">K01</td><td class="p-2">P-01</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Tabel Barang -->
+                        <div class="border rounded-lg p-4 bg-white shadow-sm">
+                            <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-1">2. Tabel Barang</h4>
+                            <p class="text-xs text-slate-500 mb-2">PK: Kode_Brg</p>
+                            <table class="w-full text-left text-xs font-mono">
+                                <thead class="bg-slate-100">
+                                    <tr><th class="p-2">Kode</th><th class="p-2">Nama_Brg</th><th class="p-2">Harga</th></tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    <tr><td class="p-2 font-bold">B01</td><td class="p-2">Sabun</td><td class="p-2">5000</td></tr>
+                                    <tr><td class="p-2 font-bold">B02</td><td class="p-2">Sampo</td><td class="p-2">15000</td></tr>
+                                    <tr><td class="p-2 font-bold">B03</td><td class="p-2">Pasta</td><td class="p-2">12000</td></tr>
+                                    <tr><td class="p-2 font-bold">B04</td><td class="p-2">Sikat</td><td class="p-2">8000</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Tabel Detail_Transaksi -->
+                        <div class="border rounded-lg p-4 bg-white shadow-sm">
+                            <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-1">3. Tabel Detail_Transaksi</h4>
+                            <p class="text-xs text-slate-500 mb-2">Composite PK: (No_Nota, Kode_Brg)</p>
+                            <table class="w-full text-left text-xs font-mono">
+                                <thead class="bg-slate-100">
+                                    <tr><th class="p-2">No_Nota</th><th class="p-2">Kode</th><th class="p-2">Qty</th><th class="p-2">SubTot</th></tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    <tr><td class="p-2">N-101</td><td class="p-2">B01</td><td class="p-2">2</td><td class="p-2">10000</td></tr>
+                                    <tr><td class="p-2">N-101</td><td class="p-2">B02</td><td class="p-2">1</td><td class="p-2">15000</td></tr>
+                                    <tr><td class="p-2">N-102</td><td class="p-2">B03</td><td class="p-2">3</td><td class="p-2">36000</td></tr>
+                                    <tr><td class="p-2">N-103</td><td class="p-2">B01</td><td class="p-2">1</td><td class="p-2">5000</td></tr>
+                                    <tr><td class="p-2">N-103</td><td class="p-2">B04</td><td class="p-2">2</td><td class="p-2">16000</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-tab Content: 3NF -->
+                <div id="subtab-3nf" class="sub-content space-y-4 mt-6 hidden">
+                    <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg">
+                        <h3 class="font-bold text-purple-900 text-sm">Penjelasan Tahap 3NF (Third Normal Form)</h3>
+                        <p class="text-purple-800 text-sm mt-1">Syarat 3NF adalah sudah berada dalam 2NF dan tidak ada ketergantungan transitif (atribut non-kunci bergantung pada atribut non-kunci lainnya). Pada tabel 2NF sebelumnya, <code>Nama_Kasir</code> bergantung pada <code>ID_Kasir</code> (bukan langsung pada <code>No_Nota</code>) dan <code>Nama_Pelanggan</code> bergantung pada <code>ID_Pelanggan</code>. Oleh karena itu, kita pisahkan entitas master tersebut menjadi <strong>Tabel Kasir</strong> dan <strong>Tabel Pelanggan</strong> yang berdiri sendiri.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div class="border rounded-lg p-4 bg-white shadow-sm">
+                            <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-1">Tabel Kasir (Master)</h4>
+                            <table class="w-full text-left text-xs font-mono">
+                                <thead class="bg-slate-100"><tr><th class="p-2">ID_Kasir (PK)</th><th class="p-2">Nama_Kasir</th></tr></thead>
+                                <tbody class="divide-y">
+                                    <tr><td class="p-2 font-bold text-indigo-600">K01</td><td class="p-2">Rina</td></tr>
+                                    <tr><td class="p-2 font-bold text-indigo-600">K02</td><td class="p-2">Anton</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-white shadow-sm">
+                            <h4 class="font-bold text-sm text-slate-800 mb-2 border-b pb-1">Tabel Pelanggan (Master)</h4>
+                            <table class="w-full text-left text-xs font-mono">
+                                <thead class="bg-slate-100"><tr><th class="p-2">ID_Pelanggan (PK)</th><th class="p-2">Nama_Pelanggan</th></tr></thead>
+                                <tbody class="divide-y">
+                                    <tr><td class="p-2 font-bold text-indigo-600">P-01</td><td class="p-2">Budi Santoso</td></tr>
+                                    <tr><td class="p-2 font-bold text-indigo-600">P-02</td><td class="p-2">Citra Kirana</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-tab Content: SQL Script -->
+                <div id="subtab-sql" class="sub-content space-y-4 mt-6 hidden">
+                    <div class="bg-slate-900 text-slate-100 rounded-xl p-6 shadow-inner overflow-x-auto">
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                            <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Skrip SQL DDL & DML - POLNES Mart</span>
+                            <button onclick="copySqlCode()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded transition"><i class="fa-regular fa-copy"></i> Salin Kode</button>
+                        </div>
+                        <pre id="sql-code-block" class="text-xs text-emerald-400 leading-relaxed"><code>-- ==========================================
+-- SKRIP SQL IMPLEMENTASI NORMALISASI POLNES MART
+-- ==========================================
+
+-- 1. PEMBUATAN TABEL MASTER KASIR
+CREATE TABLE Kasir (
+    ID_Kasir VARCHAR(10) PRIMARY KEY,
+    Nama_Kasir VARCHAR(50) NOT NULL
+);
+
+-- 2. PEMBUATAN TABEL MASTER PELANGGAN
+CREATE TABLE Pelanggan (
+    ID_Pelanggan VARCHAR(10) PRIMARY KEY,
+    Nama_Pelanggan VARCHAR(100) NOT NULL
+);
+
+-- 3. PEMBUATAN TABEL MASTER BARANG
+CREATE TABLE Barang (
+    Kode_Brg VARCHAR(10) PRIMARY KEY,
+    Nama_Brg VARCHAR(100) NOT NULL,
+    Harga DECIMAL(10,2) NOT NULL
+);
+
+-- 4. PEMBUATAN TABEL TRANSAKSI (NOTA)
+CREATE TABLE Nota (
+    No_Nota VARCHAR(10) PRIMARY KEY,
+    Tanggal_Nota DATE NOT NULL,
+    ID_Kasir VARCHAR(10),
+    ID_Pelanggan VARCHAR(10),
+    FOREIGN KEY (ID_Kasir) REFERENCES Kasir(ID_Kasir),
+    FOREIGN KEY (ID_Pelanggan) REFERENCES Pelanggan(ID_Pelanggan)
+);
+
+-- 5. PEMBUATAN TABEL DETAIL TRANSAKSI
+CREATE TABLE Detail_Transaksi (
+    No_Nota VARCHAR(10),
+    Kode_Brg VARCHAR(10),
+    Qty INT NOT NULL,
+    Sub_Total DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (No_Nota, Kode_Brg),
+    FOREIGN KEY (No_Nota) REFERENCES Nota(No_Nota),
+    FOREIGN KEY (Kode_Brg) REFERENCES Barang(Kode_Brg)
+);
+
+-- ==========================================
+-- INSERT DATA DUMMY (DML)
+-- ==========================================
+INSERT INTO Kasir VALUES ('K01', 'Rina'), ('K02', 'Anton');
+INSERT INTO Pelanggan VALUES ('P-01', 'Budi Santoso'), ('P-02', 'Citra Kirana');
+INSERT INTO Barang VALUES ('B01', 'Sabun Mandi', 5000), ('B02', 'Sampo Clear', 15000), ('B03', 'Pasta Gigi', 12000), ('B04', 'Sikat Gigi', 8000);
+INSERT INTO Nota VALUES ('N-101', '2026-10-05', 'K01', 'P-01'), ('N-102', '2026-10-05', 'K02', 'P-02'), ('N-103', '2026-10-06', 'K01', 'P-01');
+INSERT INTO Detail_Transaksi VALUES ('N-101', 'B01', 2, 10000), ('N-101', 'B02', 1, 15000), ('N-102', 'B03', 3, 36000), ('N-103', 'B01', 1, 5000), ('N-103', 'B04', 2, 16000);
+</code></pre>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: TEKS SIAP TEMPEL KE GOOGLE DOCS -->
+        <div id="view-report" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Format Laporan Praktikum (Siap Tempel ke Google Docs)</h2>
+                        <p class="text-slate-600 text-sm mt-1">Disusun sesuai format resmi POLNES dengan isi kasus Normalisasi Basis Data POLNES Mart.</p>
+                    </div>
+                    <button onclick="copyReportText()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition shadow flex items-center gap-2">
+                        <i class="fa-regular fa-clipboard"></i> Salin Seluruh Laporan
+                    </button>
+                </div>
+
+                <!-- Report Content Area -->
+                <div id="report-content-body" class="prose max-w-none text-slate-800 space-y-6 text-sm leading-relaxed">
+                    
+                    <!-- Halaman Judul -->
+                    <div class="text-center space-y-3 py-6 border-b border-dashed border-slate-300">
+                        <h3 class="text-lg font-bold tracking-wide uppercase">LAPORAN PRAKTIKUM PERTEMUAN KE - 10<br>NORMALISASI BASIS DATA POLNES MART</h3>
+                        <div class="my-4 flex justify-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/id/thumb/6/6a/Logo_Polnes_2015-sekarang.png/960px-Logo_Polnes_2015-sekarang.png" alt="Logo Polnes" class="h-20 w-auto">
+                        </div>
+                        <p class="font-semibold text-slate-700">Oleh :</p>
+                        <p class="text-slate-600">
+                            Nama Mahasiswa 1 | NIM 3.34.2026.1 | D3 Teknik Informatika<br>
+                            Nama Mahasiswa 2 | NIM 3.34.2026.2 | D3 Teknik Informatika
+                        </p>
+                        <div class="pt-4 font-bold text-slate-900">
+                            JURUSAN TEKNOLOGI INFORMASI<br>
+                            PROGRAM STUDI D3 TEKNIK INFORMATIKA<br>
+                            POLITEKNIK NEGERI SAMARINDA<br>
+                            2026
+                        </div>
+                    </div>
+
+                    <!-- Judul Bab -->
+                    <div>
+                        <h4 class="text-base font-bold text-indigo-900 uppercase">Judul: Normalisasi Basis Data Relasional pada Sistem Transaksi Minimarket POLNES Mart</h4>
+                    </div>
+
+                    <!-- Pendahuluan -->
+                    <div class="space-y-2">
+                        <h4 class="text-base font-bold text-slate-900">1. Pendahuluan</h4>
+                        <p>
+                            Dalam era digital saat ini, pencatatan transaksi berbasis manual menggunakan spreadsheet seringkali menimbulkan masalah redundansi data, anomali pembaharuan, serta inkonsistensi informasi. Kasus pada minimarket "POLNES Mart" yang baru beralih dari pencatatan manual ke sistem komputerisasi menunjukkan bahwa rekapitulasi harian dari struk belanja memiliki atribut berulang akibat penggunaan fitur <em>Merge Cells</em> pada format Excel (Bentuk Tidak Normal / UNF). 
+                        </p>
+                        <p>
+                            Tujuan dari praktikum ini adalah memahami dan menerapkan tahapan normalisasi basis data mulai dari Bentuk Tidak Normal (UNF), First Normal Form (1NF), Second Normal Form (2NF), hingga Third Normal Form (3NF) guna menghasilkan skema basis data relasional yang efisien, terstruktur, dan bebas anomali.
+                        </p>
+                    </div>
+
+                    <!-- Bahan dan Metode -->
+                    <div class="space-y-2">
+                        <h4 class="text-base font-bold text-slate-900">2. Bahan dan Metode</h4>
+                        <p>
+                            <strong>Waktu dan Tempat:</strong> Praktikum dilaksanakan pada bulan Oktober 2026 di Laboratorium Pemrograman dan Basis Data, Jurusan Teknologi Informasi, Politeknik Negeri Samarinda.
+                        </p>
+                        <p>
+                            <strong>Metode Analisis:</strong> Metode yang digunakan adalah dekomposisi tabel bertahap berdasarkan kaidah normalisasi relasional Codd, dengan menganalisis ketergantungan fungsional (functional dependency), ketergantungan parsial, dan ketergantungan transitif pada data transaksi POLNES Mart.
+                        </p>
+                    </div>
+
+                    <!-- Hasil -->
+                    <div class="space-y-4">
+                        <h4 class="text-base font-bold text-slate-900">3. Hasil</h4>
+                        <p>Hasil pengamatan dan transformasi tahapan normalisasi dari data mentah struk belanja POLNES Mart dijabarkan melalui tabel-tabel berikut:</p>
+                        
+                        <div class="space-y-3">
+                            <p class="font-semibold text-xs text-slate-700">Tabel 3.1 Transformasi Tahap 1NF (Atomarisasi Data)</p>
+                            <div class="overflow-x-auto border rounded-lg">
+                                <table class="w-full text-left text-xs border-collapse font-mono">
+                                    <thead class="bg-slate-100 font-bold text-slate-800">
+                                        <tr>
+                                            <th class="p-2 border">No_Nota</th>
+                                            <th class="p-2 border">Tanggal</th>
+                                            <th class="p-2 border">ID_Kasir</th>
+                                            <th class="p-2 border">Nama_Kasir</th>
+                                            <th class="p-2 border">ID_Pelanggan</th>
+                                            <th class="p-2 border">Nama_Pelanggan</th>
+                                            <th class="p-2 border">Kode_Brg</th>
+                                            <th class="p-2 border">Nama_Brg</th>
+                                            <th class="p-2 border">Harga</th>
+                                            <th class="p-2 border">Qty</th>
+                                            <th class="p-2 border">Sub_Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y">
+                                        <tr><td class="p-2 border">N-101</td><td class="p-2 border">05-10-2026</td><td class="p-2 border">K01</td><td class="p-2 border">Rina</td><td class="p-2 border">P-01</td><td class="p-2 border">Budi Santoso</td><td class="p-2 border">B01</td><td class="p-2 border">Sabun Mandi</td><td class="p-2 border">5000</td><td class="p-2 border">2</td><td class="p-2 border">10000</td></tr>
+                                        <tr><td class="p-2 border">N-101</td><td class="p-2 border">05-10-2026</td><td class="p-2 border">K01</td><td class="p-2 border">Rina</td><td class="p-2 border">P-01</td><td class="p-2 border">Budi Santoso</td><td class="p-2 border">B02</td><td class="p-2 border">Sampo Clear</td><td class="p-2 border">15000</td><td class="p-2 border">1</td><td class="p-2 border">15000</td></tr>
+                                        <tr><td class="p-2 border">N-102</td><td class="p-2 border">05-10-2026</td><td class="p-2 border">K02</td><td class="p-2 border">Anton</td><td class="p-2 border">P-02</td><td class="p-2 border">Citra Kirana</td><td class="p-2 border">B03</td><td class="p-2 border">Pasta Gigi</td><td class="p-2 border">12000</td><td class="p-2 border">3</td><td class="p-2 border">36000</td></tr>
+                                        <tr><td class="p-2 border">N-103</td><td class="p-2 border">06-10-2026</td><td class="p-2 border">K01</td><td class="p-2 border">Rina</td><td class="p-2 border">P-01</td><td class="p-2 border">Budi Santoso</td><td class="p-2 border">B01</td><td class="p-2 border">Sabun Mandi</td><td class="p-2 border">5000</td><td class="p-2 border">1</td><td class="p-2 border">5000</td></tr>
+                                        <tr><td class="p-2 border">N-103</td><td class="p-2 border">06-10-2026</td><td class="p-2 border">K01</td><td class="p-2 border">Rina</td><td class="p-2 border">P-01</td><td class="p-2 border">Budi Santoso</td><td class="p-2 border">B04</td><td class="p-2 border">Sikat Gigi</td><td class="p-2 border">8000</td><td class="p-2 border">2</td><td class="p-2 border">16000</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <p class="font-semibold text-xs text-slate-700">Skema Final Tabel 3NF (Struktur Relasional)</p>
+                            <ul class="list-disc pl-5 space-y-1 text-xs font-mono">
+                                <li><strong>Kasir</strong> (<ins>ID_Kasir</ins>, Nama_Kasir)</li>
+                                <li><strong>Pelanggan</strong> (<ins>ID_Pelanggan</ins>, Nama_Pelanggan)</li>
+                                <li><strong>Barang</strong> (<ins>Kode_Brg</ins>, Nama_Brg, Harga)</li>
+                                <li><strong>Nota</strong> (<ins>No_Nota</ins>, Tanggal_Nota, ID_Kasir (FK), ID_Pelanggan (FK))</li>
+                                <li><strong>Detail_Transaksi</strong> (<ins>No_Nota</ins>, <ins>Kode_Brg</ins>, Qty, Sub_Total)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Pembahasan -->
+                    <div class="space-y-2">
+                        <h4 class="text-base font-bold text-slate-900">4. Pembahasan</h4>
+                        <p>
+                            Berdasarkan hasil transformasi yang dilakukan, proses normalisasi sangat esensial untuk menghilangkan anomali insersi, penghapusan, dan modifikasi. Pada tahap 2NF, pemisahan dilakukan untuk mengatasi ketergantungan parsial dengan membentuk tabel terpisah untuk Nota, Barang, dan Detail Transaksi yang menggunakan <em>Composite Primary Key</em> `(No_Nota, Kode_Brg)`.
+                        </p>
+                        <p>
+                            Selanjutnya pada tahap 3NF, ditemukan ketergantungan transitif di mana atribut `Nama_Kasir` dan `Nama_Pelanggan` bergantung pada atribut non-kunci masing-masing (`ID_Kasir` dan `ID_Pelanggan`). Pemisahan entitas master Kasir dan Pelanggan berhasil menghasilkan struktur basis data yang memenuhi standar Third Normal Form dan siap diimplementasikan ke dalam Sistem Manajemen Basis Data Relasional (RDBMS). Total belanja setiap nota tidak disimpan secara fisik melainkan dihitung secara dinamis sebagai <em>derived attribute</em> menggunakan fungsi agregasi SQL guna menjaga integritas data.
+                        </p>
+                    </div>
+
+                    <!-- Daftar Pustaka -->
+                    <div class="space-y-2">
+                        <h4 class="text-base font-bold text-slate-900">5. Daftar Pustaka</h4>
+                        <p class="text-xs font-mono">
+                            [1] R. Elmasri and S. B. Navathe, <em>Fundamentals of Database Systems</em>, 7th ed. Boston: Pearson, 2016.<br>
+                            [2] A. Silberschatz, H. F. Korth, and S. Sudarshan, <em>Database System Concepts</em>, 6th ed. New York: McGraw-Hill, 2011.<br>
+                            [3] Tim Penyusun Modul Praktikum, <em>Modul Praktikum Sistem Basis Data</em>, Politeknik Negeri Samarinda, 2026.
+                        </p>
+                    </div>
+
+                    <!-- Lampiran -->
+                    <div class="space-y-2">
+                        <h4 class="text-base font-bold text-slate-900">6. Lampiran</h4>
+                        <p>Foto kegiatan praktikum dan tangkapan layar eksekusi skrip SQL pada RDBMS MySQL / PostgreSQL.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-500">
+        <p>&copy; 2026 Praktikum Sistem Basis Data &bull; Politeknik Negeri Samarinda</p>
+    </footer>
+
+    <!-- JavaScript Interactive Logic -->
+    <script>
+        function switchMainTab(tab) {
+            const codeView = document.getElementById('view-code');
+            const reportView = document.getElementById('view-report');
+            const btnCode = document.getElementById('btn-code');
+            const btnReport = document.getElementById('btn-report');
+
+            if (tab === 'code') {
+                codeView.classList.remove('hidden');
+                reportView.classList.add('hidden');
+                btnCode.className = "px-4 py-2 bg-indigo-700 hover:bg-indigo-600 text-white text-sm font-semibold rounded-lg transition shadow flex items-center gap-2";
+                btnReport.className = "px-4 py-2 bg-indigo-800/60 hover:bg-indigo-700 text-indigo-100 text-sm font-semibold rounded-lg transition shadow flex items-center gap-2";
+            } else {
+                codeView.classList.add('hidden');
+                reportView.classList.remove('hidden');
+                btnReport.className = "px-4 py-2 bg-indigo-700 hover:bg-indigo-600 text-white text-sm font-semibold rounded-lg transition shadow flex items-center gap-2";
+                btnCode.className = "px-4 py-2 bg-indigo-800/60 hover:bg-indigo-700 text-indigo-100 text-sm font-semibold rounded-lg transition shadow flex items-center gap-2";
+            }
+        }
+
+        function switchSubTab(sub) {
+            const subs = ['unf', '1nf', '2nf', '3nf', 'sql'];
+            subs.forEach(s => {
+                const el = document.getElementById('subtab-' + s);
+                const btn = document.getElementById('subbtn-' + s);
+                if (s === sub) {
+                    el.classList.remove('hidden');
+                    btn.className = "sub-tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white transition";
+                } else {
+                    el.classList.add('hidden');
+                    btn.className = "sub-tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
+                }
+            });
+        }
+
+        function copySqlCode() {
+            const code = document.getElementById('sql-code-block').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Skrip SQL berhasil disalin ke clipboard!');
+            });
+        }
+
+        function copyReportText() {
+            const reportDiv = document.getElementById('report-content-body');
+            const range = document.createRange();
+            range.selectNode(reportDiv);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            try {
+                document.execCommand('copy');
+                alert('Teks laporan berhasil disalin! Anda dapat langsung menempelkannya (Paste) ke Google Docs.');
+            } catch (err) {
+                alert('Gagal menyalin teks secara otomatis. Silakan pilih dan salin manual.');
+            }
+            window.getSelection().removeAllRanges();
+        }
+    </script>
+</body>
+</html>

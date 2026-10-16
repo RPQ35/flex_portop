@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Key vs. Candidate Key Explorer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .pulse-subtle {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header / Hero Section -->
+    <header class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 mb-4">
+                        <i class="fa-solid fa-database"></i> Database Management Systems
+                    </span>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+                        Database Keys Explorer
+                    </h1>
+                    <p class="mt-3 text-lg text-slate-300 max-w-2xl">
+                        Master the nuances between <span class="text-indigo-300 font-semibold">Normal Attributes</span>, <span class="text-amber-300 font-semibold">Super Keys</span>, and <span class="text-emerald-300 font-semibold">Candidate Keys</span> through interactive simulations and real-world analogies.
+                    </p>
+                </div>
+                <div class="flex flex-row md:flex-col gap-3">
+                    <a href="#analyzer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-600/35 transition-all duration-200 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-play"></i> Launch Analyzer
+                    </a>
+                    <a href="#concepts" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium transition-all duration-200">
+                        <i class="fa-solid fa-book-open"></i> Learn Concepts
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Section 1: Conceptual Breakdown & Real-World Analogies -->
+        <section id="concepts" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">1. Core Concepts & Real-World Analogies</h2>
+                <p class="mt-2 text-slate-600">Understand database keys by mapping them to everyday objects and identification systems.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Normal Attribute Card -->
+                <div class="glass-card rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between border-t-4 border-t-slate-400">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 mb-4 text-xl">
+                            <i class="fa-solid fa-tag"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Standard Field</span>
+                        <h3 class="text-xl font-bold text-slate-900 mt-1">Normal Attribute</h3>
+                        <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                            Any data field in a relation that does not uniquely identify a record on its own. Multiple records can share the exact same value.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 bg-slate-50/50 -mx-6 -mb-6 p-4 rounded-b-2xl">
+                        <p class="text-xs font-semibold text-slate-700"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Analogy:</p>
+                        <p class="text-xs text-slate-600 mt-1">Your <strong>Hair Color</strong> or <strong>First Name</strong>. Many people can have brown hair or be named "John".</p>
+                    </div>
+                </div>
+
+                <!-- Super Key Card -->
+                <div class="glass-card rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between border-t-4 border-t-amber-500">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 mb-4 text-xl">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-600">Uniqueness Guaranteed (May have Redundancy)</span>
+                        <h3 class="text-xl font-bold text-slate-900 mt-1">Super Key</h3>
+                        <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                            Any combination of one or more attributes that uniquely identifies a row in a table. A super key can contain extra, unnecessary attributes (redundancy).
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 bg-amber-50/30 -mx-6 -mb-6 p-4 rounded-b-2xl">
+                        <p class="text-xs font-semibold text-amber-900"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Analogy:</p>
+                        <p class="text-xs text-slate-600 mt-1"><strong>{Passport Number, Full Name, Age}</strong>. It uniquely identifies you, but Name and Age are redundant extra baggage!</p>
+                    </div>
+                </div>
+
+                <!-- Candidate Key Card -->
+                <div class="glass-card rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between border-t-4 border-t-emerald-500">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-4 text-xl">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Minimal Super Key</span>
+                        <h3 class="text-xl font-bold text-slate-900 mt-1">Candidate Key</h3>
+                        <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                            A super key with <strong>no redundant attributes</strong>. If you remove any single attribute from a candidate key, it loses its ability to uniquely identify rows.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 bg-emerald-50/30 -mx-6 -mb-6 p-4 rounded-b-2xl">
+                        <p class="text-xs font-semibold text-emerald-900"><i class="fa-solid fa-lightbulb text-emerald-500 mr-1"></i> Analogy:</p>
+                        <p class="text-xs text-slate-600 mt-1">Your <strong>Passport Number</strong> alone. Remove any digit and uniqueness is lost. It is pure and minimal.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Visual Hierarchy & Venn Diagram Representation -->
+        <section class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm">
+            <div class="max-w-3xl mx-auto text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">2. Key Hierarchy & Inclusion Relationship</h2>
+                <p class="mt-2 text-slate-600">Every Candidate Key is a Super Key, but not every Super Key is a Candidate Key. Normal attributes live outside the key universe.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-8 py-6">
+                <!-- SVG Venn Diagram -->
+                <div class="relative w-full max-w-md aspect-square bg-slate-900/5 rounded-2xl p-4 flex items-center justify-center border border-slate-200">
+                    <svg viewBox="0 0 400 400" class="w-full h-full drop-shadow-md">
+                        <!-- Outer Box: All Attributes Universe -->
+                        <rect x="20" y="20" width="360" height="360" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6 6"/>
+                        <text x="35" y="45" class="text-[11px] font-bold fill-slate-400 uppercase">Relation Attributes Universe</text>
+
+                        <!-- Super Key Circle (Outer) -->
+                        <circle cx="200" cy="210" r="140" fill="#fef3c7" fill-opacity="0.6" stroke="#f59e0b" stroke-width="3" />
+                        <text x="200" y="90" text-anchor="middle" class="text-xs font-extrabold fill-amber-700 tracking-wider">SUPER KEYS</text>
+                        <text x="200" y="108" text-anchor="middle" class="text-[10px] fill-amber-600">(Uniques + Redundant Sets e.g., {ID, Name})</text>
+
+                        <!-- Candidate Key Circle (Inner) -->
+                        <circle cx="200" cy="235" r="85" fill="#ecfdf5" fill-opacity="0.8" stroke="#10b981" stroke-width="3" />
+                        <text x="200" y="215" text-anchor="middle" class="text-xs font-extrabold fill-emerald-700 tracking-wider">CANDIDATE KEYS</text>
+                        <text x="200" y="232" text-anchor="middle" class="text-[10px] fill-emerald-600">(Minimal Super Keys e.g., {ID}, {Email})</text>
+
+                        <text x="200" y="260" text-anchor="middle" class="text-[11px] font-mono font-bold fill-emerald-800">{StudentID}, {Email}, {Phone}</text>
+
+                        <!-- Normal Attribute labels outside inner, inside outer -->
+                        <text x="80" y="150" class="text-[11px] font-medium fill-slate-500">Name</text>
+                        <text x="300" y="160" class="text-[11px] font-medium fill-slate-500">Age</text>
+                        <text x="290" y="310" class="text-[11px] font-medium fill-slate-500">Major</text>
+                    </svg>
+                </div>
+
+                <!-- Explanation Bullets -->
+                <div class="space-y-4 max-w-lg">
+                    <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-slate-100 shadow-sm">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-1">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Candidate Keys are Minimal</h4>
+                            <p class="text-xs text-slate-600 mt-1">They sit at the core. Each candidate key is the smallest possible unique identifier combination.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-slate-100 shadow-sm">
+                        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 mt-1">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Super Keys wrap Candidate Keys</h4>
+                            <p class="text-xs text-slate-600 mt-1">Any candidate key plus any normal attribute forms a super key. They guarantee uniqueness but include extra attributes.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-slate-100 shadow-sm">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 mt-1">
+                            <i class="fa-solid fa-tag"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Normal Attributes are Non-Unique</h4>
+                            <p class="text-xs text-slate-600 mt-1">Attributes like Name or Age cannot identify rows by themselves and cannot form keys without unique identifiers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Comparison Table -->
+        <section class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm overflow-hidden">
+            <div class="max-w-3xl mx-auto text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">3. Comprehensive Comparison Matrix</h2>
+                <p class="mt-2 text-slate-600">Quick reference table highlighting similarities and structural differences.</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500 bg-slate-100/70">
+                            <th class="p-4 rounded-tl-xl">Property</th>
+                            <th class="p-4 text-slate-600">Normal Attribute</th>
+                            <th class="p-4 text-amber-700">Super Key</th>
+                            <th class="p-4 rounded-tr-xl text-emerald-700">Candidate Key</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 text-sm">
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="p-4 font-semibold text-slate-900">Uniquely Identifies Tuples?</td>
+                            <td class="p-4 text-rose-600 font-medium"><i class="fa-solid fa-xmark mr-1"></i> No</td>
+                            <td class="p-4 text-emerald-600 font-medium"><i class="fa-solid fa-check mr-1"></i> Yes</td>
+                            <td class="p-4 text-emerald-600 font-medium"><i class="fa-solid fa-check mr-1"></i> Yes</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="p-4 font-semibold text-slate-900">Minimality Required?</td>
+                            <td class="p-4 text-slate-400">N/A</td>
+                            <td class="p-4 text-rose-600 font-medium"><i class="fa-solid fa-xmark mr-1"></i> No (can have extra attributes)</td>
+                            <td class="p-4 text-emerald-600 font-medium"><i class="fa-solid fa-check mr-1"></i> Yes (strictly minimal)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="p-4 font-semibold text-slate-900">Contains Redundancy?</td>
+                            <td class="p-4 text-slate-400">N/A</td>
+                            <td class="p-4 text-amber-600 font-medium"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Often yes</td>
+                            <td class="p-4 text-emerald-600 font-medium"><i class="fa-solid fa-shield-check mr-1"></i> Zero redundancy</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="p-4 font-semibold text-slate-900">Can be Compound (Multiple)?</td>
+                            <td class="p-4 text-slate-500">Single attribute</td>
+                            <td class="p-4 text-slate-700 font-medium">Yes (can combine any attributes)</td>
+                            <td class="p-4 text-slate-700 font-medium">Yes (e.g., {StudentID, CourseID})</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="p-4 font-semibold text-slate-900">Role in Primary Key Selection</td>
+                            <td class="p-4 text-slate-400">Ineligible</td>
+                            <td class="p-4 text-slate-500">Pool of possible choices</td>
+                            <td class="p-4 text-emerald-700 font-bold">Selected as Primary Key</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 4: Interactive Database Key Analyzer Tool -->
+        <section id="analyzer" class="glass-card rounded-3xl p-6 sm:p-10 shadow-lg border-2 border-indigo-100">
+            <div class="max-w-3xl mx-auto text-center mb-8">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 mb-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Live Interactive Sandbox
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">4. Interactive Database Key Analyzer</h2>
+                <p class="mt-2 text-slate-600">Select or click attributes from the <code class="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono font-bold">Students</code> relation below to test and instantly analyze whether your selection forms a Candidate Key, Super Key (with redundancy), or Normal Attribute.</p>
+            </div>
+
+            <!-- Sample Table Preview -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider"><i class="fa-solid fa-table mr-1.5 text-indigo-600"></i> Sample Students Relation</h3>
+                    <span class="text-xs text-slate-500 font-medium">Showing 4 sample tuples</span>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3 attr-header" data-attr="student_id">StudentID</th>
+                                <th class="p-3 attr-header" data-attr="email">Email</th>
+                                <th class="p-3 attr-header" data-attr="phone">Phone</th>
+                                <th class="p-3 attr-header" data-attr="name">Name</th>
+                                <th class="p-3 attr-header" data-attr="age">Age</th>
+                                <th class="p-3 attr-header" data-attr="major">Major</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-mono text-xs">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-indigo-600">S101</td>
+                                <td class="p-3">alice@uni.edu</td>
+                                <td class="p-3">555-0192</td>
+                                <td class="p-3 text-slate-800 font-sans">Alice Smith</td>
+                                <td class="p-3">20</td>
+                                <td class="p-3">Computer Science</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-indigo-600">S102</td>
+                                <td class="p-3">bob@uni.edu</td>
+                                <td class="p-3">555-8371</td>
+                                <td class="p-3 text-slate-800 font-sans">Bob Jones</td>
+                                <td class="p-3">22</td>
+                                <td class="p-3">Mathematics</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-indigo-600">S103</td>
+                                <td class="p-3">charlie@uni.edu</td>
+                                <td class="p-3">555-4920</td>
+                                <td class="p-3 text-slate-800 font-sans">Alice Smith</td>
+                                <td class="p-3">21</td>
+                                <td class="p-3">Physics</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-indigo-600">S104</td>
+                                <td class="p-3">diana@uni.edu</td>
+                                <td class="p-3">555-3829</td>
+                                <td class="p-3 text-slate-800 font-sans">Diana Prince</td>
+                                <td class="p-3">20</td>
+                                <td class="p-3">Computer Science</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Attribute Selector Toggle Buttons -->
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <label class="text-sm font-bold text-slate-800">Click attributes to include in your query/key test:</label>
+                    <div class="flex gap-2">
+                        <button id="select-all-btn" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors">Select All</button>
+                        <button id="clear-btn" class="text-xs font-semibold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors">Clear Selection</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3" id="attribute-toggles">
+                    <!-- Toggles will be populated/handled via JS -->
+                    <button data-attr="student_id" class="attr-pill p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition-all text-left flex flex-col justify-between group active:scale-95">
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-xs font-bold text-slate-500 group-hover:text-indigo-600">Key 🔑</span>
+                            <span class="checkbox-indicator w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center text-[10px] text-white"></span>
+                        </div>
+                        <span class="font-bold text-sm text-slate-800 mt-2">StudentID</span>
+                    </button>
+
+                    <button data-attr="email" class="attr-pill p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition-all text-left flex flex-col justify-between group active:scale-95">
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-xs font-bold text-slate-500 group-hover:text-indigo-600">Key 🔑</span>
+                            <span class="checkbox-indicator w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center text-[10px] text-white"></span>
+                        </div>
+                        <span class="font-bold text-sm text-slate-800 mt-2">Email</span>
+                    </button>
+
+                    <button data-attr="phone" class="attr-pill p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition-all text-left flex flex-col justify-between group active:scale-95">
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-xs font-bold text-slate-500 group-hover:text-indigo-600">Key 🔑</span>
+                            <span class="checkbox-indicator w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center text-[10px] text-white"></span>
+                        </div>
+                        <span class="font-bold text-sm text-slate-800 mt-2">Phone</span>
+                    </button>
+
+                    <button data-attr="name" class="attr-pill p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition-all text-left flex flex-col justify-between group active:scale-95">
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-xs font-bold text-slate-500 group-hover:text-indigo-600">Attribute</span>
+                            <span class="checkbox-indicator w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center text-[10px] text-white"></span>
+                        </div>
+                        <span class="font-bold text-sm text-slate-800 mt-2">Name</span>
+                    </button>
+
+                    <button data-attr="age" class="attr-pill p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition-all text-left flex flex-col justify-between group active:scale-95">
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-xs font-bold text-slate-500 group-hover:text-indigo-600">Attribute</span>
+                            <span class="checkbox-indicator w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center text-[10px] text-white"></span>
+                        </div>
+                        <span class="font-bold text-sm text-slate-800 mt-2">Age</span>
+                    </button>
+
+                    <button data-attr="major" class="attr-pill p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition-all text-left flex flex-col justify-between group active:scale-95">
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-xs font-bold text-slate-500 group-hover:text-indigo-600">Attribute</span>
+                            <span class="checkbox-indicator w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center text-[10px] text-white"></span>
+                        </div>
+                        <span class="font-bold text-sm text-slate-800 mt-2">Major</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analysis Result Output Box -->
+            <div id="analyzer-result" class="mt-8 p-6 rounded-2xl bg-white border-2 border-slate-200 transition-all shadow-sm">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Analysis Verdict</span>
+                        <div id="verdict-title" class="text-xl font-black text-slate-800 mt-1 flex items-center gap-2">
+                            <i class="fa-solid fa-hand-pointer text-indigo-500"></i> Please select attributes above
+                        </div>
+                    </div>
+                    <div id="verdict-badge" class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-slate-100 text-slate-600">
+                        Awaiting Input
+                    </div>
+                </div>
+
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2 space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Detailed Explanation</h4>
+                        <p id="verdict-explanation" class="text-sm text-slate-700 leading-relaxed">
+                            Select one or more attributes from the grid above to test their uniqueness and minimality properties in our database relation.
+                        </p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Properties Check</h4>
+                        <ul class="text-xs space-y-1.5 text-slate-700" id="properties-list">
+                            <li class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-circle text-[6px]"></i> Uniqueness: —</li>
+                            <li class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-circle text-[6px]"></i> Minimality: —</li>
+                            <li class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-circle text-[6px]"></i> Redundancy: —</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-10 mt-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+                <p class="font-bold text-white text-sm">Database Keys Interactive Explorer</p>
+                <p class="text-xs text-slate-500 mt-1">Designed for relational database learners and students.</p>
+            </div>
+            <div class="text-xs text-slate-500">
+                <span class="text-indigo-400 font-semibold">Super Key</span> vs <span class="text-emerald-400 font-semibold">Candidate Key</span> vs <span class="text-slate-300 font-semibold">Normal Attribute</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript Analyzer Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Define base candidate keys for our sample table
+            // Singletons that uniquely identify tuples: student_id, email, phone
+            const candidateKeySingletons = ['student_id', 'email', 'phone'];
+            
+            // State: selected attributes set
+            const selectedAttrs = new Set();
+
+            const pillButtons = document.querySelectorAll('.attr-pill');
+            const selectAllBtn = document.getElementById('select-all-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            
+            const verdictTitle = document.getElementById('verdict-title');
+            const verdictBadge = document.getElementById('verdict-badge');
+            const verdictExplanation = document.getElementById('verdict-explanation');
+            const propertiesList = document.getElementById('properties-list');
+            const analyzerResult = document.getElementById('analyzer-result');
+
+            function updateUI() {
+                pillButtons.forEach(btn => {
+                    const attr = btn.dataset.attr;
+                    const indicator = btn.querySelector('.checkbox-indicator');
+                    if (selectedAttrs.has(attr)) {
+                        btn.classList.add('border-indigo-600', 'bg-indigo-50/40', 'shadow-sm');
+                        btn.classList.remove('border-slate-200', 'bg-white');
+                        indicator.classList.add('bg-indigo-600', 'border-indigo-600');
+                        indicator.innerHTML = '<i class="fa-solid fa-check text-[9px]"></i>';
+                    } else {
+                        btn.classList.remove('border-indigo-600', 'bg-indigo-50/40', 'shadow-sm');
+                        btn.classList.add('border-slate-200', 'bg-white');
+                        indicator.classList.remove('bg-indigo-600', 'border-indigo-600');
+                        indicator.innerHTML = '';
+                    }
+                });
+
+                evaluateSelection();
+            }
+
+            function evaluateSelection() {
+                if (selectedAttrs.size === 0) {
+                    analyzerResult.className = "mt-8 p-6 rounded-2xl bg-white border-2 border-slate-200 transition-all shadow-sm";
+                    verdictTitle.innerHTML = `<i class="fa-solid fa-hand-pointer text-indigo-500"></i> Please select attributes above`;
+                    verdictBadge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-slate-100 text-slate-600";
+                    verdictBadge.textContent = "Awaiting Input";
+                    verdictExplanation.textContent = "Select one or more attributes from the grid above to test their uniqueness and minimality properties in our database relation.";
+                    propertiesList.innerHTML = `
+                        <li class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-circle text-[6px]"></i> Uniqueness: —</li>
+                        <li class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-circle text-[6px]"></i> Minimality: —</li>
+                        <li class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-circle text-[6px]"></i> Redundancy: —</li>
+                    `;
+                    return;
+                }
+
+                // Check if selection contains any candidate key singleton
+                let containsCandidateKey = false;
+                let matchedCK = null;
+                for (let ck of candidateKeySingletons) {
+                    if (selectedAttrs.has(ck)) {
+                        containsCandidateKey = true;
+                        matchedCK = ck;
+                        break;
+                    }
+                }
+
+                const arr = Array.from(selectedAttrs);
+
+                if (containsCandidateKey) {
+                    // It is a Super Key!
+                    // Is it minimal? (i.e. size === 1 and it is exactly one of the candidate keys)
+                    if (selectedAttrs.size === 1 && candidateKeySingletons.includes(arr[0])) {
+                        // Candidate Key!
+                        analyzerResult.className = "mt-8 p-6 rounded-2xl bg-emerald-50/40 border-2 border-emerald-300 transition-all shadow-md";
+                        verdictTitle.innerHTML = `<i class="fa-solid fa-award text-emerald-600"></i> Candidate Key (Minimal Super Key)`;
+                        verdictBadge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-800";
+                        verdictBadge.textContent = "Valid Candidate Key";
+                        verdictExplanation.innerHTML = `Your selection <strong>{${arr.join(', ')}}</strong> is a <strong>Candidate Key</strong>. It uniquely identifies every tuple in the relation and is strictly <em>minimal</em>—removing the attribute would destroy its uniqueness.`;
+                        propertiesList.innerHTML = `
+                            <li class="flex items-center gap-2 text-emerald-700 font-semibold"><i class="fa-solid fa-check text-xs"></i> Uniqueness: Guaranteed</li>
+                            <li class="flex items-center gap-2 text-emerald-700 font-semibold"><i class="fa-solid fa-check text-xs"></i> Minimality: 100% Minimal</li>
+                            <li class="flex items-center gap-2 text-emerald-700 font-semibold"><i class="fa-solid fa-shield text-xs"></i> Redundancy: None</li>
+                        `;
+                    } else {
+                        // Super Key with Redundancy
+                        analyzerResult.className = "mt-8 p-6 rounded-2xl bg-amber-50/40 border-2 border-amber-300 transition-all shadow-md";
+                        verdictTitle.innerHTML = `<i class="fa-solid fa-key text-amber-600"></i> Super Key (With Redundancy)`;
+                        verdictBadge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-800";
+                        verdictBadge.textContent = "Super Key (Redundant)";
+                        verdictExplanation.innerHTML = `Your selection <strong>{${arr.join(', ')}}</strong> is a <strong>Super Key</strong> because it contains the unique identifier <code>${matchedCK}</code>. However, it contains <strong>redundancy</strong>! You can remove the extra attributes and still uniquely identify rows.`;
+                        propertiesList.innerHTML = `
+                            <li class="flex items-center gap-2 text-emerald-700 font-semibold"><i class="fa-solid fa-check text-xs"></i> Uniqueness: Guaranteed</li>
+                            <li class="flex items-center gap-2 text-amber-700 font-semibold"><i class="fa-solid fa-triangle-exclamation text-xs"></i> Minimality: Not minimal</li>
+                            <li class="flex items-center gap-2 text-amber-700 font-semibold"><i class="fa-solid fa-plus text-xs"></i> Redundancy: Contains extra attributes</li>
+                        `;
+                    }
+                } else {
+                    // Does not contain any candidate key -> Normal Attributes / Non-Key set
+                    analyzerResult.className = "mt-8 p-6 rounded-2xl bg-slate-100 border-2 border-slate-300 transition-all shadow-md";
+                    verdictTitle.innerHTML = `<i class="fa-solid fa-tag text-slate-600"></i> Normal Attribute / Non-Key Combination`;
+                    verdictBadge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700";
+                    verdictBadge.textContent = "Not a Key";
+                    verdictExplanation.innerHTML = `Your selection <strong>{${arr.join(', ')}}</strong> is composed solely of <strong>Normal Attributes</strong> (or a non-key combination). It lacks any unique identifier like StudentID or Email, meaning duplicate values can occur across tuples.`;
+                    propertiesList.innerHTML = `
+                        <li class="flex items-center gap-2 text-rose-600 font-semibold"><i class="fa-solid fa-xmark text-xs"></i> Uniqueness: Not guaranteed</li>
+                        <li class="flex items-center gap-2 text-slate-500 font-semibold"><i class="fa-solid fa-minus text-xs"></i> Minimality: N/A</li>
+                        <li class="flex items-center gap-2 text-slate-500 font-semibold"><i class="fa-solid fa-minus text-xs"></i> Redundancy: N/A</li>
+                    `;
+                }
+            }
+
+            pillButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const attr = btn.dataset.attr;
+                    if (selectedAttrs.has(attr)) {
+                        selectedAttrs.delete(attr);
+                    } else {
+                        selectedAttrs.add(attr);
+                    }
+                    updateUI();
+                });
+            });
+
+            selectAllBtn.addEventListener('click', () => {
+                pillButtons.forEach(btn => selectedAttrs.add(btn.dataset.attr));
+                updateUI();
+            });
+
+            clearBtn.addEventListener('click', () => {
+                selectedAttrs.clear();
+                updateUI();
+            });
+        });
+    </script>
+</body>
+</html>
